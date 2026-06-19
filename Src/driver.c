@@ -3074,15 +3074,16 @@ void EXTI9_5_IRQHandler(void)
             spi_irq.callback(0, DIGITAL_IN(SPI_IRQ_PORT, SPI_IRQ_BIT) == 0);
 #endif
 #if SPINDLE_INDEX_BIT & 0x03E0
-        spindle_encoder_index_event();
+        if(ifg & SPINDLE_INDEX_BIT)
+            spindle_encoder_index_event();
 #endif
 #if (LIMIT_MASK|SD_DETECT_BIT) & 0x03E0
         if(ifg & (LIMIT_MASK|SD_DETECT_BIT))
             core_pin_irq(ifg);
 #endif
 #if AUXINPUT_MASK & 0x03E0
-        if(ifg & SPINDLE_INDEX_BIT)
-            spindle_encoder_index_event();
+        if(ifg & aux_irq)
+            aux_pin_irq(ifg & aux_irq);
 #endif
     }
 }
